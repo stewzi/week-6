@@ -1,5 +1,12 @@
+import os
+from pathlib import Path
+
 import pandas as pd
 import requests
+from dotenv import load_dotenv
+
+
+load_dotenv(Path(__file__).resolve().with_name(".env"))
 
 
 class Genius:
