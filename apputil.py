@@ -22,24 +22,24 @@ class Genius:
             timeout=30,
         )
         response.raise_for_status()
-        return response.json()["response"]
+        return response.json()
 
     def get_artist(self, search_term):
-        """Find the primary artist of the first search result."""
+        """Return the full API JSON for the first result's primary artist."""
         data = self._get("/search", params={"q": search_term})
-        hits = data["hits"]
+        hits = data["response"]["hits"]
         if not hits:
             return {}
 
         artist_id = hits[0]["result"]["primary_artist"]["id"]
-        artist_data = self._get(f"/artists/{artist_id}")
-        return artist_data["artist"]
+        return self._get(f"/artists/{artist_id}")
 
     def get_artists(self, search_terms):
         """Return one row of artist information for each search term."""
         rows = []
         for search_term in search_terms:
-            artist = self.get_artist(search_term)
+            data = self.get_artist(search_term)
+            artist = data.get("response", {}).get("artist", {})
             rows.append({
                 "search_term": search_term,
                 "artist_name": artist.get("name"),
